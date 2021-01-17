@@ -37,6 +37,10 @@ python run_gazenet.py --model=only_real.pt --test_data="test_data"
 
 ### Data
 
+```http
+https://pan.baidu.com/s/1VrXuF1A1aFoKvd97LSZngw
+```
+
 - data for train
 
   The training data is placed in the same level directory of the project.
