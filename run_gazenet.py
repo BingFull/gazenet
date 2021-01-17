@@ -10,8 +10,8 @@ import csv
 # Import local files and utils
 root_dir = Path.cwd()
 sys.path.append(str(root_dir))
-import src.cam_utils as cam_utils
 import src.data_utils as data_utils
+import src.run_utils as run_utils
 
 '''
 This file is used to run the Gaze Net. It takes images from your webcam, feeds them through the model
@@ -40,14 +40,10 @@ def gaze_inference(image_np, model):
     input_image = data_utils.ndimage_to_variable(image_np,
                                                  imsize=(args.height, args.width),
                                                  use_gpu=True)
-    # Inference
-    # Clamp output to between 0 and 1 (outside this range doesn't make sense)
     gaze_output = model(input_image).clamp(0, 1)
     gaze_list = gaze_output.cpu().data.numpy().tolist()[0]
-    # Visualization of the results of a detection.
-    # canvas = cam_utils.screen_plot(gaze_list, image=image_np, window_name=args.window_name)   #bfu
-    #return canvas
     return gaze_list
+
 
 def write_accuracy_csv(GD, rst_gaze_list, accuracy_csv_path):
     fileheader = ["Groundtruth_x", "Groundtruth_y", "predict_x", "predict_y"]
@@ -77,11 +73,7 @@ if __name__ == '__main__':
     print('Loading model from %s' % model_path)
     model = torch.load(model_path)
 
-    # Start up webcam stream and fps tracker
-    # video_capture = cam_utils.WebcamVideoStream(src=args.video_source,
-    #                                             width=args.width,
-    #                                             height=args.height).start()
-    fps = cam_utils.FPS().start()
+    fps = run_utils.FPS().start()
 
     root_path = Path.cwd() / args.test_data_path
     dir_list = os.listdir(root_path)
