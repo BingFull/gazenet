@@ -1,3 +1,13 @@
+data_test_one/
+data_test_sec_one/
+logs/
+models/*
+src/models/*
+test_data*/
+*.jpg
+
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
