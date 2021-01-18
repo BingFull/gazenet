@@ -35,6 +35,20 @@ python run_gazenet.py --model=only_real.pt --test_data="test_data"
 
   Convert the pupil position in  magnified world camera to the position in world camera.
 
+- process_data.py
+
+  Process the original data collected from Pupil-labs and classify them by users and points.
+
+- dsnt.py
+
+  A network to inferring numerical coordinates for points of interest in an input image.
+
+  [[paper]](https://arxiv.org/abs/1801.07372)  [[source code]](<https://github.com/anibali/dsntnn>)  [[reference]](https://blog.csdn.net/csdnforyou/article/details/108519676)
+
+- DSNT_example.py
+
+  An example of DSNT.
+
 ### Data
 
 ```http
