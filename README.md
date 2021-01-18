@@ -49,6 +49,10 @@ python run_gazenet.py --model=only_real.pt --test_data="test_data"
 
   An example of DSNT.
 
+- covert_timestamps.py
+
+  Covert the timestamps in 'gaze_positions.csv' collected from Pupil-labs.
+
 ### Data
 
 ```http
