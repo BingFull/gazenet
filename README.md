@@ -6,7 +6,7 @@ A gazenet for mapping pupil position to gaze position based on resnet-18 &amp; r
 - Train
 
 ```bash
-python --datasets=data_train --saveas=model_name --log=log_name --test=True
+python train_gazenet.py --datasets=data_train --saveas=model_name --log=log_name --test=True
 ```
 
 - Test
