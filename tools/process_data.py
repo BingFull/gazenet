@@ -17,6 +17,7 @@ bt_threshold_m = 0.5
 lr_threshold_m = 0.5
 user = "User26"
 gaze_position_path = "data_n" + "/" + user + "/" + "gaze_positions.csv"
+pupil_position_path = "data_n" + "/" + user + "/" + "pupil_positions.csv"
 marker_pos_path = "data_n" + "/" + user + "/" + "markers_pos.csv"
 parameter_path = "data_n" + "/" + user + "/" + "parameter.csv"
 eye_timestamps = "data_n" + "/" + user + "/" + "eye1_timestamps.npy"
@@ -67,6 +68,35 @@ def read_gaze_data(gaze_position_path, frame_index):
         average_x, average_y = numpy.mean(matirx, axis=0)
         stdev_x, stdev_y = numpy.std(matirx, axis=0)
         count = len(gaze_pos[i])
+        result.append([average_x, stdev_x, average_y, stdev_y, count, float(record_timestamp[i][0]),
+                       float(record_timestamp[i][1])])
+    return result
+
+
+def read_pupil_data(pupil_position_path, frame_index, eye_id):
+    pupil_pos = [[] for i in range(point_num + add_point_num)]
+    result = []
+    record_timestamp = numpy.zeros([point_num + add_point_num, 2])
+    csvfile = open(pupil_position_path, "r")
+    reader = csv.reader(csvfile)
+    rows = [row for row in reader]
+    for row in rows:
+        if row[0] == 'world_timestamp':
+            continue
+        if float(row[3]) >= confidence_threshold and int(row[2]) == eye_id:
+            for i in range(point_num + add_point_num):
+                if float(row[1]) >= frame_index[i][0] and float(row[1]) <= frame_index[i][1]:
+                    if record_timestamp[i][0] == 0:
+                        record_timestamp[i][0] = row[0]
+                    pupil_pos[i].append([row[4], row[5]])
+                    record_timestamp[i][1] = row[0]
+                    break
+    csvfile.close()
+    for i in range(point_num + add_point_num):
+        matirx = numpy.array(pupil_pos[i], dtype='float_')
+        average_x, average_y = numpy.mean(matirx, axis=0)
+        stdev_x, stdev_y = numpy.std(matirx, axis=0)
+        count = len(pupil_pos[i])
         result.append([average_x, stdev_x, average_y, stdev_y, count, float(record_timestamp[i][0]),
                        float(record_timestamp[i][1])])
     return result

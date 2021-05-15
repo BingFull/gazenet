@@ -8,8 +8,8 @@ point_num = 9
 imgWidth = 1280
 imgHight = 720
 distance = 45
-user = "User35"
-accuracy_csv_path = "result_" + user + ".csv"
+user = "User4"
+accuracy_csv_path = "..\\result" + "\\" + "result_" + user + ".csv"
 
 
 def _extract_target_from_gazefilename(dirpath, filename_regex='(\d.\d+)_(\d.\d+)_(\d.\d+)'):
@@ -75,11 +75,11 @@ def cal_LRTB(marker_pos):
     return LRTB
 
 
-def write_accuracy_csv(accuracy_w, accuracy_m, match_accuracy, accuracy_csv_path):
+def write_accuracy_csv(accuracy_w, accuracy_m, match_accuracy, save_path):
     fileheader = [
         "User", "match_H", "match_V", "match_N", "w_cam_H", "w_cam_V", "w_cam_N", "m_cam_H", "m_cam_V", "m_cam_N"
     ]
-    csvfile = open(accuracy_csv_path, "w", newline='')
+    csvfile = open(save_path, "w", newline='')
     dict_writer = csv.DictWriter(csvfile, fileheader)
     dict_writer.writeheader()
     for index in range(point_num):
@@ -194,13 +194,13 @@ def cal_accuracy(index, groundtruth, gaze_pos, len_pixel, dis, type):
 if __name__ == '__main__':
     len_pixel = [0.0525, 0.05928]
     sec_len_pixel = [0.02564, 0.02564]
-    path = "G:\\gazenet-master\\test_data\\" + user
+    path = "G:\\GazeNet\\gazenet\\test_data_for_one\\" + user
     # path = "G:\\experimental_records\\08_29\\" + user
-    path_sec = "G:\\gazenet-master\\test_data_for_sec\\" + user
-    marker_path = "G:\\gazenet-master\\test_data\\" + user + "\\marker_pos.npy"
+    path_sec = "G:\\GazeNet\\gazenet\\test_data_sec_for_one\\" + user
+    marker_path = "G:\\GazeNet\\gazenet\\test_data_for_one\\" + user + "\\marker_pos.npy"
     # marker_path = "G:\\experimental_records\\08_29\\" + user + "\\marker_pos.npy"
 
-    sec_marker_path = "G:\\gazenet-master\\test_data_for_sec\\" + user + "\\sec_marker_pos.npy"
+    sec_marker_path = "G:\\GazeNet\\gazenet\\test_data_sec_for_one\\" + user + "\\sec_marker_pos.npy"
     W_cam_GD = get_groundtruth(path, cam='W_cam')
     M_cam_GD = get_groundtruth(path_sec, cam='M_cam')
     gaze_data_result = read_gaze_data(path, cam='W_cam')
@@ -209,6 +209,7 @@ if __name__ == '__main__':
     sec_marker_pos = np.load(sec_marker_path)
     marker_LRTB = cal_LRTB(marker_pos)
     sec_marker_LRTB = cal_LRTB(sec_marker_pos)
+
     process_data(len_pixel, sec_len_pixel, W_cam_GD, M_cam_GD, gaze_data_result, sec_gaze_result, marker_LRTB,
                  sec_marker_LRTB)
     print('Done!')

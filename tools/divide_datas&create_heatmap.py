@@ -127,9 +127,118 @@ def divide_datas(data_dir_path):
                 shutil.move(old_path, test_dir_path)
 
 
+def divide_datas_pupil(data_dir_path):
+    dir_list = os.listdir(data_dir_path)
+    for dir in dir_list:
+        if dir == '.DS_Store':
+            os.remove(data_dir_path + '\\' + dir)
+            continue
+        # sub_dir_list = os.listdir(data_dir_path + '\\' + dir)
+        # for sub_dir in sub_dir_list:
+        #     if sub_dir == '.DS_Store':
+        #         os.remove(data_dir_path + '\\' + dir + '\\' + sub_dir)
+        #         continue
+        file_list = os.listdir(data_dir_path + '\\' + dir)
+        train_dir_path = data_dir_path + '\\' + dir + '\\' + 'train'
+        test_dir_path = data_dir_path + '\\' + dir + '\\' + 'test'
+
+        if not os.path.exists(train_dir_path):
+            os.makedirs(train_dir_path)
+            print("create new folder: " + train_dir_path)
+
+        if not os.path.exists(test_dir_path):
+            os.makedirs(test_dir_path)
+            print("create new folder: " + test_dir_path)
+
+        file_base_path = data_dir_path + '\\' + dir + '\\'
+        # files_train = copy.deepcopy(file_list[:-50])
+        # files_test = copy.deepcopy(file_list[-50:])
+
+        for file in file_list[:-50]:
+            if file == '.DS_Store':
+                os.remove(file_base_path + file)
+                continue
+            if os.path.isdir(file_base_path + file):
+                continue
+            old_path = file_base_path + file
+            shutil.move(old_path, train_dir_path)
+
+        for file in file_list[-50:]:
+            if file == '.DS_Store':
+                continue
+            if os.path.isdir(file_base_path + file):
+                continue
+            old_path = file_base_path + file
+            shutil.move(old_path, test_dir_path)
+
+
+def divide_datas_for_data_one(data_dir_path, dst_path):
+    user_list = os.listdir(data_dir_path)
+    for user in user_list:
+        if user == '.DS_Store':
+            os.remove(data_dir_path + '\\' + user)
+            continue
+        point_list = os.listdir(data_dir_path + '\\' + user)
+        for point in point_list:
+            if not os.path.isdir(data_dir_path + '\\' + user + '\\' + point):
+                continue
+            train_dir = data_dir_path + '\\' + user + '\\' + point + '\\' + 'train'
+            file_list = os.listdir(train_dir)
+            for file in file_list[-50:]:
+                if file == '.DS_Store':
+                    os.remove(train_dir + '\\' + file)
+                    continue
+                if os.path.isdir(train_dir + '\\' + file):
+                    continue
+                old_path = train_dir + '\\' + file
+                new_path = dst_path + '\\' + user + '\\' + point
+                if not os.path.exists(new_path):
+                    os.makedirs(new_path)
+                shutil.move(old_path, new_path)
+                print("move: " + old_path + " to: " + new_path)
+        # for sub_dir in point_list:
+        #     if sub_dir == '.DS_Store':
+        #         os.remove(data_dir_path + '\\' + dir + '\\' + sub_dir)
+        #         continue
+        #     file_list = os.listdir(data_dir_path + '\\' + dir + '\\' + sub_dir)
+        #     train_dir_path = data_dir_path + '\\' + dir + '\\' + sub_dir + '\\' + 'train'
+        #     test_dir_path = data_dir_path + '\\' + dir + '\\' + sub_dir + '\\' + 'test'
+        #
+        #     if not os.path.exists(train_dir_path):
+        #         os.makedirs(train_dir_path)
+        #         print("create new folder: " + train_dir_path)
+        #
+        #     if not os.path.exists(test_dir_path):
+        #         os.makedirs(test_dir_path)
+        #         print("create new folder: " + test_dir_path)
+        #
+        #     file_base_path = data_dir_path + '\\' + dir + '\\' + sub_dir + '\\'
+        #     # files_train = copy.deepcopy(file_list[:-50])
+        #     # files_test = copy.deepcopy(file_list[-50:])
+
+            # for file in file_list[:-50]:
+            #     if file == '.DS_Store':
+            #         os.remove(file_base_path + file)
+            #         continue
+            #     if os.path.isdir(file_base_path + file):
+            #         continue
+            #     old_path = file_base_path + file
+            #     shutil.move(old_path, train_dir_path)
+            #
+            # for file in file_list[-50:]:
+            #     if file == '.DS_Store':
+            #         continue
+            #     if os.path.isdir(file_base_path + file):
+            #         continue
+            #     old_path = file_base_path + file
+            #     shutil.move(old_path, test_dir_path)
+
+
 if __name__ == '__main__':
-    divide_datas(data_dir_path="G:\\data\\frames_new_sec")
+    # divide_datas(data_dir_path="G:\\GazeNet\\data\\frame_new")
+    divide_datas_pupil(data_dir_path="G:\\GazeNet\\data\\data_train_pupil")
     # create_heatmap("G:\\data\\data_train_old", img_width=1280, img_height=720)
+    # divide_datas_for_data_one("G:\\GazeNet\\data\\data_train_sec_for_one", "G:\\GazeNet\\gazenet\\test_data_sec_for_one")
     print("Done!")
 
 

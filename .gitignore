@@ -4,6 +4,8 @@ logs/
 models/*
 src/models/*
 test_data*/
+result/
+*.sh
 *.jpg
 
 .DS_Store

@@ -50,12 +50,12 @@ parser.add_argument('--log', type=str, default=None,
 if __name__ == '__main__':
     # Parse and print out parameters
     args = parser.parse_args()
-    args.feature_extractor = 'resnet18'
-    # args.head_feat_in = 512
+    args.feature_extractor = 'resnet50'
+    args.head_feat_in = 512
     # args.lr = 0.001
     args.lr_step_size = 7
-    args.batch_size = 32
-    args.num_epochs = 15
+    args.batch_size = 8
+    args.num_epochs = 50
     args.width = 320
     args.height = 240
     print('Running Gazenet Trainer. Parameters:')
@@ -71,8 +71,8 @@ if __name__ == '__main__':
                                 head_feat_in=args.head_feat_in,
                                 feature_extractor=args.feature_extractor)
 
-    for child in model.children():
-        print(child)
+    # for child in model.children():
+    #     print(child)
 
     # Create dataset
     dataloader = data_utils.gaze_dataloader(datasets=args.datasets,

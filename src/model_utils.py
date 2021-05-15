@@ -2,6 +2,7 @@ from itertools import chain
 import torch
 import torchvision
 import torch.nn as nn
+from src.cbam_cifar10 import ResNet50
 
 
 class GazeNet(nn.Module):
@@ -14,7 +15,8 @@ class GazeNet(nn.Module):
         if kwargs['feature_extractor'] == 'resnet18':
             self.base = torchvision.models.resnet18(pretrained=True)
         elif kwargs['feature_extractor'] == 'resnet50':
-            self.base = torchvision.models.resnet50(pretrained=True)
+            # self.base = torchvision.models.resnet50(pretrained=True)
+            self.base = ResNet50(use_cbam_block=True, use_cbam_class=True)
         else:
             raise Exception('Must provide a valid Feature extractor for GazeNet model')
         # Freeze the feature extractor

@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 import os
 from tqdm import tqdm
+import cv2
 
 # Relative local directories
 ROOT_DIR = Path.cwd()
@@ -207,6 +208,44 @@ class GazeDataset(Dataset):
         self.dataset = self._load_dataset()
         # self.plot_samples(3)
 
+    ### load data for all
+    # def _load_dataset(self):
+    #     """
+    #     Loads dataset into a pandas dataframe
+    #     :return: (pd) dataset with (filename, gaze_x, gaze_y) as header columns
+    #     """
+    #     image_list = []
+    #     # Load and combine all the individual datasets
+    #     for dataset in os.listdir(DATA_DIR / Path(self.datasets[0])):
+    #         image_list_size = len(image_list)
+    #         file_list = os.listdir(DATA_DIR / Path(self.datasets[0]) / Path(dataset))
+    #
+    #         for file_dir in file_list:
+    #             if file_dir == '.DStore':
+    #                 continue
+    #             data_path = Path(dataset) / file_dir / self.phase
+    #             full_path = DATA_DIR / Path(self.datasets[0]) / data_path
+    #             image_list.extend(full_path.glob('*.jpg'))
+    #         dataset_size = len(image_list) - image_list_size
+    #         print('Found %s images in dataset %s' % (dataset_size, str(dataset)))
+    #     print('Combined dataset contains %s images.' % len(image_list))
+    #     # Create new pandas dataframe
+    #     df = pd.DataFrame(index=list(range(len(image_list))), columns=self.columns)
+    #     # Add all images in dataset folder into dataframe
+    #
+    #     for i, imagepath in enumerate(tqdm(image_list)):
+    #         gaze_x, gaze_y = _extract_target_from_gazefilename(imagepath)
+    #         gaze_x = gaze_x - 0.1 + 0.2 * np.random.random()
+    #         gaze_y = gaze_y - 0.1 + 0.2 * np.random.random()
+    #         if self.dataset_type == 'fake':
+    #             left, upper, right, lower = _bounding_box(imagepath)  # , plot=True) # DEBUG
+    #             df.loc[i] = [imagepath, gaze_x, gaze_y, left, upper, right, lower]
+    #         elif self.dataset_type == 'real':
+    #             df.loc[i] = [str(imagepath), gaze_x, gaze_y]
+    #     return df
+
+
+    ### load data for one
     def _load_dataset(self):
         """
         Loads dataset into a pandas dataframe
@@ -214,25 +253,18 @@ class GazeDataset(Dataset):
         """
         image_list = []
         # Load and combine all the individual datasets
-        for dataset in os.listdir(DATA_DIR / Path(self.datasets[0])):
-            bb = DATA_DIR / Path(self.datasets[0])
-            image_list_size = len(image_list)
-            marker_path = DATA_DIR / Path(self.datasets[0]) / Path(dataset) / Path("marker_pos.npy")
-            sec_marker_path = DATA_DIR / Path(self.datasets[0]) / Path(dataset) / Path("sec_marker_pos.npy")
-            file_list = os.listdir(DATA_DIR / Path(self.datasets[0]) / Path(dataset))
-            # marker_pos = np.load(marker_path)
-            # sec_marker_pos = np.load(sec_marker_path)
-            # marker_LRTB = cal_LRTB(marker_pos)
-            # sec_marker_LRTB = cal_LRTB(sec_marker_pos)
+        # for dataset in os.listdir(DATA_DIR / Path(self.datasets[0])):
+        image_list_size = len(image_list)
+        file_list = os.listdir(DATA_DIR / Path(self.datasets[0]))
 
-            for file_dir in file_list:
-                if file_dir == '.DStore':
-                    continue
-                data_path = Path(dataset) / file_dir / self.phase
-                full_path = DATA_DIR / Path(self.datasets[0]) / data_path
-                image_list.extend(full_path.glob('*.jpg'))
-            dataset_size = len(image_list) - image_list_size
-            print('Found %s images in dataset %s' % (dataset_size, str(dataset)))
+        for file_dir in file_list:
+            if file_dir == '.DStore':
+                continue
+            data_path = Path(DATA_DIR / Path(self.datasets[0])) / file_dir / self.phase
+            # full_path = DATA_DIR / Path(self.datasets[0]) / data_path
+            image_list.extend(data_path.glob('*.jpg'))
+        dataset_size = len(image_list) - image_list_size
+        # print('Found %s images in dataset %s' % (dataset_size, str(dataset)))
         print('Combined dataset contains %s images.' % len(image_list))
         # Create new pandas dataframe
         df = pd.DataFrame(index=list(range(len(image_list))), columns=self.columns)
@@ -249,6 +281,7 @@ class GazeDataset(Dataset):
                 df.loc[i] = [str(imagepath), gaze_x, gaze_y]
         return df
 
+
     def __len__(self):
         return len(self.dataset)
 
@@ -259,6 +292,7 @@ class GazeDataset(Dataset):
         :return sample: (dict) image, gaze target
         """
         image = load_image_ndarray(self.dataset.iloc[idx, 0])
+
         # Apply transform if necessary
         if self.transform:
             image = self.transform(image)
